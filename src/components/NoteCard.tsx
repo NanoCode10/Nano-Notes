@@ -73,7 +73,7 @@ export default function NoteCard({
               {status}
             </span>
           </div>
-          <span className="text-[10px] font-xs text-gray-600 px-2 ">
+          <span className="text-[9px] font-xs text-gray-600 self-end ">
             {new Date(createDate).toLocaleDateString("es-ES", {
               day: "2-digit",
               month: "2-digit",
