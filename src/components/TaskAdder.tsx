@@ -1,24 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NoteStatus } from "../types/types";
+import { NoteProps, NoteStatus } from "../types/types";
 import { FloatingButton } from "../assets/icons/FloatingButton";
+import { generateUniqueId } from "../utils/generateUniqueId";
 
 interface TaskAdderProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  onAddNote: (title: string, details: string, status: NoteStatus) => void;
-  onEditNote?: (
-    id: string,
-    title: string,
-    details: string,
-    status: NoteStatus
-  ) => void;
-  editingNote?: {
-    id: string;
-    title: string;
-    details: string;
-    status: NoteStatus;
-  };
+  onAddNote: (note: NoteProps) => void;
+  onEditNote?: (note: NoteProps) => void;
+  editingNote?: NoteProps;
 }
 
 export default function TaskAdder({
@@ -55,12 +46,17 @@ export default function TaskAdder({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const note: NoteProps = {
+      id: editingNote ? editingNote.id : generateUniqueId(), // Asegúrate de tener una función para generar IDs únicos
+      title,
+      details: description,
+      status,
+    };
     if (editingNote && onEditNote) {
-      onEditNote(editingNote.id, title, description, status);
+      onEditNote(note); // Ahora pasas el objeto completo
     } else {
-      onAddNote(title, description, status);
+      onAddNote(note); // También pasas el objeto completo
     }
-
     onClose();
   };
 
@@ -132,13 +128,13 @@ export default function TaskAdder({
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-2 focus:ring-blue-300"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-2 focus:ring-blue-300"
                 >
                   {editingNote ? <>Guardar cambios</> : <>Agregar nota</>}
                 </button>
