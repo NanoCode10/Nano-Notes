@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { NoteStatus } from "../types/types";
+import { NoteProps, NoteStatus } from "../types/types";
 
-interface NoteProps {
-  id: string;
-  title: string;
-  details: string;
+interface NoteCardProps extends NoteProps {
   initialStatus: NoteStatus;
   onStatusChange: (id: string, newStatus: string) => void;
   onEdit: (
@@ -24,7 +21,7 @@ export default function NoteCard({
   onStatusChange,
   onEdit,
   onDelete,
-}: NoteProps) {
+}: NoteCardProps) {
   const [status, setStatus] = useState(initialStatus);
 
   useEffect(() => {

@@ -2,19 +2,14 @@
 import { useState } from "react";
 import "./App.css";
 import NoteCard from "./components/NoteCard";
-import TaskAdder from "./components/task-adder";
+import TaskAdder from "./components/TaskAdder";
 import useNotes from "./hooks/useNotes";
-import { NoteStatus } from "./types/types";
+import { NoteProps, NoteStatus } from "./types/types";
 
 function App() {
   const { notes, addNote, deleteNote, updateNote } = useNotes();
   const [isTaskAdderOpen, setIsTaskAdderOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState<{
-    id: string;
-    title: string;
-    details: string;
-    status: NoteStatus;
-  } | null>(null);
+  const [editingNote, setEditingNote] = useState<NoteProps | null>(null);
 
   // Función para validar el estado
   const getValidStatus = (status: string): NoteStatus => {
@@ -25,7 +20,8 @@ function App() {
   };
 
   const handleStatusChange = (id: number, newStatus: string) => {
-    updateNote(id, { estado: newStatus });
+    const validStatus = getValidStatus(newStatus);
+    updateNote(id, { status: validStatus });
   };
 
   const handleEdit = (
@@ -42,13 +38,14 @@ function App() {
     id: string,
     title: string,
     details: string,
-    status: string
+    status: NoteStatus
   ) => {
     updateNote(parseInt(id), {
-      titulo: title,
-      detalles: details,
-      estado: status,
+      title,
+      details,
+      status,
     });
+
     setEditingNote(null);
   };
   const onOpen = () => {
@@ -58,16 +55,17 @@ function App() {
 
   return (
     <>
-      <h1 className="text-5xl font-bold underline pb-24">NoteApp</h1>
+      <h1 className="text-5xl font-bold underline  pb-24">NoteApp</h1>
       {/* Muestra las notas guardadas en el estado */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {notes.map((note) => (
           <NoteCard
             key={note.id}
             id={note.id.toString()}
-            title={note.titulo}
-            details={note.detalles}
-            initialStatus={getValidStatus(note.estado)}
+            title={note.title}
+            details={note.details}
+            status="Iniciado"
+            initialStatus={getValidStatus(note.status)}
             onStatusChange={(id, newStatus) =>
               handleStatusChange(parseInt(id), newStatus)
             }
