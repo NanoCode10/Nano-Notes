@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NoteStatus } from "../types/types";
 import { FloatingButton } from "../assets/icons/FloatingButton";
 
@@ -32,6 +32,14 @@ export default function TaskAdder({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<NoteStatus>("Iniciado");
+
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen && titleRef.current) {
+      titleRef.current.focus();
+    }
+  }, [isOpen, editingNote, onOpen, onClose]);
 
   useEffect(() => {
     if (editingNote) {
@@ -77,6 +85,7 @@ export default function TaskAdder({
                 <input
                   type="text"
                   id="title"
+                  ref={titleRef}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400"

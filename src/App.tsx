@@ -55,7 +55,7 @@ function App() {
 
   return (
     <>
-      <h1 className="text-5xl font-bold underline  pb-24">NoteApp</h1>
+      <h1 className="text-5xl font-bold underline  pb-12">NoteApp</h1>
       {/* Muestra las notas guardadas en el estado */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {notes.map((note) => (
