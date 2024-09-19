@@ -1,15 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NoteProps, NoteStatus } from "../types/types";
+import { NoteStatus } from "../types/types";
 import { FloatingButton } from "../assets/icons/FloatingButton";
-import { generateUniqueId } from "../utils/generateUniqueId";
 
 interface TaskAdderProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  onAddNote: (note: NoteProps) => void;
-  onEditNote?: (note: NoteProps) => void;
-  editingNote?: NoteProps;
+  onAddNote: (title: string, details: string, status: NoteStatus) => void;
+  onEditNote?: (
+    id: string,
+    title: string,
+    details: string,
+    status: NoteStatus
+  ) => void;
+  editingNote?: {
+    id: string;
+    title: string;
+    details: string;
+    status: NoteStatus;
+  };
 }
 
 export default function TaskAdder({
@@ -46,17 +55,12 @@ export default function TaskAdder({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const note: NoteProps = {
-      id: editingNote ? editingNote.id : generateUniqueId(), // Asegúrate de tener una función para generar IDs únicos
-      title,
-      details: description,
-      status,
-    };
     if (editingNote && onEditNote) {
-      onEditNote(note); // Ahora pasas el objeto completo
+      onEditNote(editingNote.id, title, description, status);
     } else {
-      onAddNote(note); // También pasas el objeto completo
+      onAddNote(title, description, status);
     }
+
     onClose();
   };
 
