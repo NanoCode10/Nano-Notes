@@ -1,33 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { NoteStatus } from "../types/types";
 
 interface TaskAdderProps {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
   onAddNote: (title: string, details: string, status: string) => void;
+  onEditNote?: (
+    id: string,
+    title: string,
+    details: string,
+    status: NoteStatus
+  ) => void;
+  editingNote?: {
+    id: string;
+    title: string;
+    details: string;
+    status: NoteStatus;
+  };
 }
 
-type TaskStatus = "Iniciado" | "en-proceso" | "Realizado";
-
-export default function TaskAdder({ onAddNote }: TaskAdderProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function TaskAdder({
+  isOpen,
+  onOpen,
+  onClose,
+  onAddNote,
+  onEditNote,
+  editingNote,
+}: TaskAdderProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<TaskStatus>("Iniciado");
+  const [status, setStatus] = useState<NoteStatus>("Iniciado");
+
+  useEffect(() => {
+    if (editingNote) {
+      setTitle(editingNote.title);
+      setDescription(editingNote.details);
+      setStatus(editingNote.status as NoteStatus);
+    } else {
+      setTitle("");
+      setDescription("");
+      setStatus("Iniciado");
+    }
+  }, [editingNote]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (editingNote && onEditNote) {
+      onEditNote(editingNote.id, title, description, status);
+    } else {
+      onAddNote(title, description, status);
+    }
 
-    onAddNote(title, description, status);
-
-    setIsOpen(false);
-    setTitle("");
-    setDescription("");
-    setStatus("Iniciado");
+    onClose();
   };
 
   return (
     <>
       <button
         className="fixed bottom-4 right-4 rounded-full w-20 h-20 bg-blue-600 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 flex items-center justify-center"
-        onClick={() => setIsOpen(true)}
+        onClick={onOpen}
         aria-label="Agregar nueva tarea"
       >
         <svg
@@ -48,7 +80,7 @@ export default function TaskAdder({ onAddNote }: TaskAdderProps) {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
           <div className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
             <h2 className="text-2xl font-bold mb-4 text-white">
-              Agregar nueva tarea
+              {editingNote ? "Editar tarea" : "Agregar nueva tarea"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -94,19 +126,19 @@ export default function TaskAdder({ onAddNote }: TaskAdderProps) {
                 <select
                   id="status"
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as TaskStatus)}
+                  onChange={(e) => setStatus(e.target.value as NoteStatus)}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-white"
                   required
                 >
                   <option value="Iniciado">Iniciado</option>
-                  <option value="en-proceso">En proceso</option>
+                  <option value="Pendiente">Pendiente</option>
                   <option value="Realizado">Realizado</option>
                 </select>
               </div>
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => onClose()}
                   className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Cancelar
@@ -115,7 +147,7 @@ export default function TaskAdder({ onAddNote }: TaskAdderProps) {
                   type="submit"
                   className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  Agregar tarea
+                  {editingNote ? <>Guardar cambios</> : <>Agregar nota</>}
                 </button>
               </div>
             </form>

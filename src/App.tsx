@@ -1,20 +1,20 @@
 //import { useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 import NoteCard from "./components/NoteCard";
 import TaskAdder from "./components/task-adder";
 import useNotes from "./hooks/useNotes";
-
-type NoteStatus = "Iniciado" | "Pendiente" | "Realizado";
+import { NoteStatus } from "./types/types";
 
 function App() {
   const { notes, addNote, deleteNote, updateNote } = useNotes();
-
-  // Agrega una nueva nota al setState
-  // useEffect(() => {
-  //   //addNote("Nueva nota1", "Detalles de la nueva nota1", "Pendiente");
-  //   console.log("Notas actuales en el APP:", notes);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [notes]);
+  const [isTaskAdderOpen, setIsTaskAdderOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<{
+    id: string;
+    title: string;
+    details: string;
+    status: NoteStatus;
+  } | null>(null);
 
   // Función para validar el estado
   const getValidStatus = (status: string): NoteStatus => {
@@ -26,6 +26,34 @@ function App() {
 
   const handleStatusChange = (id: number, newStatus: string) => {
     updateNote(id, { estado: newStatus });
+  };
+
+  const handleEdit = (
+    id: string,
+    title: string,
+    details: string,
+    status: NoteStatus
+  ) => {
+    setEditingNote({ id, title, details, status });
+    setIsTaskAdderOpen(true);
+  };
+
+  const handleEditNote = (
+    id: string,
+    title: string,
+    details: string,
+    status: string
+  ) => {
+    updateNote(parseInt(id), {
+      titulo: title,
+      detalles: details,
+      estado: status,
+    });
+    setEditingNote(null);
+  };
+  const onOpen = () => {
+    setEditingNote(null); // Reseteamos editingNote para que los campos estén vacíos
+    setIsTaskAdderOpen(true);
   };
 
   return (
@@ -43,14 +71,24 @@ function App() {
             onStatusChange={(id, newStatus) =>
               handleStatusChange(parseInt(id), newStatus)
             }
-            onEdit={() => console.log("Edit")}
+            onEdit={handleEdit}
             onDelete={() => deleteNote(note.id)}
           />
         ))}
       </div>
 
       {/* Agrega una nueva nota al estado */}
-      <TaskAdder onAddNote={addNote} />
+      <TaskAdder
+        isOpen={isTaskAdderOpen}
+        onOpen={onOpen}
+        onClose={() => {
+          setIsTaskAdderOpen(false);
+          setEditingNote(null);
+        }}
+        onAddNote={addNote}
+        onEditNote={handleEditNote}
+        editingNote={editingNote || undefined}
+      />
     </>
   );
 }

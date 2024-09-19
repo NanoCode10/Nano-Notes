@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { NoteStatus } from "../types/types";
 
 interface NoteProps {
   id: string;
@@ -6,11 +7,14 @@ interface NoteProps {
   details: string;
   initialStatus: NoteStatus;
   onStatusChange: (id: string, newStatus: string) => void;
-  onEdit: (id: string) => void;
+  onEdit: (
+    id: string,
+    title: string,
+    details: string,
+    status: NoteStatus
+  ) => void;
   onDelete: (id: string) => void;
 }
-
-type NoteStatus = "Iniciado" | "Pendiente" | "Realizado";
 
 export default function NoteCard({
   id,
@@ -65,7 +69,7 @@ export default function NoteCard({
           </span>
         </div>
       </div>
-      <div className="bg-gray-700 px-4 py-3 sm:px-6 flex justify-between">
+      <div className="bg-gray-700 px-4 py-3 sm:px-6 flex justify-between gap-2">
         <button
           onClick={handleStatusChange}
           className="rounded-full p-2 bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -87,7 +91,7 @@ export default function NoteCard({
           </svg>
         </button>
         <button
-          onClick={() => onEdit(id)}
+          onClick={() => onEdit(id, title, details, status)}
           className="rounded-full p-2 bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
           aria-label="Editar"
         >
