@@ -19,7 +19,7 @@ function App() {
       : "Pendiente";
   };
 
-  const handleStatusChange = (id: number, newStatus: string) => {
+  const handleStatusChange = (id: string, newStatus: string) => {
     const validStatus = getValidStatus(newStatus);
     updateNote(id, { status: validStatus });
   };
@@ -28,9 +28,10 @@ function App() {
     id: string,
     title: string,
     details: string,
-    status: NoteStatus
+    status: NoteStatus,
+    createDate: string
   ) => {
-    setEditingNote({ id, title, details, status });
+    setEditingNote({ id, title, details, status, createDate });
     setIsTaskAdderOpen(true);
   };
 
@@ -38,12 +39,14 @@ function App() {
     id: string,
     title: string,
     details: string,
-    status: NoteStatus
+    status: NoteStatus,
+    createDate: string
   ) => {
-    updateNote(parseInt(id), {
+    updateNote(id, {
       title,
       details,
       status,
+      createDate,
     });
 
     setEditingNote(null);
@@ -64,13 +67,14 @@ function App() {
             id={note.id.toString()}
             title={note.title}
             details={note.details}
-            status="Iniciado"
+            status={getValidStatus(note.status)}
             initialStatus={getValidStatus(note.status)}
             onStatusChange={(id, newStatus) =>
-              handleStatusChange(parseInt(id), newStatus)
+              handleStatusChange(id, newStatus)
             }
             onEdit={handleEdit}
             onDelete={() => deleteNote(note.id)}
+            createDate={note.createDate}
           />
         ))}
       </div>

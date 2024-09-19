@@ -6,12 +6,18 @@ interface TaskAdderProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  onAddNote: (title: string, details: string, status: NoteStatus) => void;
+  onAddNote: (
+    title: string,
+    details: string,
+    status: NoteStatus,
+    createDate: string
+  ) => void;
   onEditNote?: (
     id: string,
     title: string,
     details: string,
-    status: NoteStatus
+    status: NoteStatus,
+    createDate: string
   ) => void;
   editingNote?: NoteProps;
 }
@@ -27,6 +33,7 @@ export default function TaskAdder({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<NoteStatus>("Iniciado");
+  const [createDate, setCreateDate] = useState("");
 
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -45,15 +52,16 @@ export default function TaskAdder({
       setTitle("");
       setDescription("");
       setStatus("Iniciado");
+      setCreateDate(new Date().toISOString());
     }
   }, [editingNote, onOpen, onClose]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (editingNote && onEditNote) {
-      onEditNote(editingNote.id, title, description, status);
+      onEditNote(editingNote.id, title, description, status, createDate);
     } else {
-      onAddNote(title, description, status);
+      onAddNote(title, description, status, createDate);
     }
 
     onClose();

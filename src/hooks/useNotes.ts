@@ -9,12 +9,13 @@ const useNotes = () => {
   const [notes, setNotes] = useLocalStorageNotes("notes", []);
 
   // Agregar una nota
-  const addNote = useCallback((titulo: string, detalles: string, estado: NoteStatus) => {
+  const addNote = useCallback((titulo: string, detalles: string, estado: NoteStatus, createDate: string) => {
     const newNote: NoteProps = {
       id: generateUniqueId(), // Generar un id único
       title: titulo,
       details: detalles,
       status: estado,
+      createDate // Fecha de creación en formato ISO,
     };
     setNotes(prevNotes => [...prevNotes, newNote]);
   }, [setNotes]);
@@ -27,9 +28,9 @@ const useNotes = () => {
   };
 
   // Actualizar una nota
-  const updateNote = (id: number, updatedNote: Partial<NoteProps>) => {
+  const updateNote = (id: string, updatedNote: Partial<NoteProps>) => {
     setNotes(prevNotes =>
-      prevNotes.map(note => (note.id === id.toString() ? { ...note, ...updatedNote } : note))
+      prevNotes.map(note => (note.id === id ? { ...note, ...updatedNote } : note))
     );
   };
 

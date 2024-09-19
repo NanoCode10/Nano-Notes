@@ -11,9 +11,11 @@ interface NoteCardProps extends NoteProps {
     id: string,
     title: string,
     details: string,
-    status: NoteStatus
+    status: NoteStatus,
+    createDate: string
   ) => void;
   onDelete: (id: string) => void;
+  createDate: string;
 }
 
 export default function NoteCard({
@@ -24,6 +26,7 @@ export default function NoteCard({
   onStatusChange,
   onEdit,
   onDelete,
+  createDate,
 }: NoteCardProps) {
   const [status, setStatus] = useState(initialStatus);
 
@@ -56,16 +59,26 @@ export default function NoteCard({
   };
 
   return (
-    <div className="bg-gray-800 shadow-lg rounded-lg overflow-hidden w-full max-w-md text-white">
+    <div className="bg-gray-800 shadow-lg rounded-lg overflow-hidden max-w-[200px] h-55 text-white">
       <div className="p-4">
-        <h2 className="text-xl font-semibold mb-2">{title}</h2>
-        <p className="text-gray-300 mb-4">{details}</p>
-        <div className="flex items-center space-x-2 mb-4">
-          <span className="text-sm font-medium">Estado:</span>
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor()}`}
-          >
-            {status}
+        <h2 className="text-xl font-semibold mb-2 break-words">{title}</h2>
+        <p className="text-gray-300 mb-1 break-words">{details}</p>
+
+        <div className="flex items-center justify-between mt-5">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Estado:</span>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor()}`}
+            >
+              {status}
+            </span>
+          </div>
+          <span className="text-[10px] font-xs text-gray-600 px-2 ">
+            {new Date(createDate).toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
           </span>
         </div>
       </div>
@@ -78,7 +91,7 @@ export default function NoteCard({
           <ChangeStatusButon />
         </button>
         <button
-          onClick={() => onEdit(id, title, details, status)}
+          onClick={() => onEdit(id, title, details, status, createDate)}
           className="rounded-full p-2 bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
           aria-label="Editar"
         >
