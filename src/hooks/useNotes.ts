@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { NoteProps, NoteStatus } from '../types/types';
 import useLocalStorageNotes from './useLocalStorageNotes';
+import { generateUniqueId } from '../utils/generateUniqueId';
 
 
 
@@ -10,10 +11,10 @@ const useNotes = () => {
   // Agregar una nota
   const addNote = useCallback((titulo: string, detalles: string, estado: NoteStatus) => {
     const newNote: NoteProps = {
-      id: Date.now().toString(), // Generar un id único
+      id: generateUniqueId(), // Generar un id único
       title: titulo,
-  details: detalles,
-  status: estado,
+      details: detalles,
+      status: estado,
     };
     setNotes(prevNotes => [...prevNotes, newNote]);
   }, [setNotes]);

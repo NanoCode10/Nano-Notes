@@ -6,6 +6,7 @@ export interface NoteProps {
   title: string;
   details: string;
   status: NoteStatus;
+  createDate: string;
 }
 
 export type EditingNote = NoteProps | null;

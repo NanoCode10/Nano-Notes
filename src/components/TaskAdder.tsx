@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NoteStatus } from "../types/types";
+import { NoteProps, NoteStatus } from "../types/types";
 import { FloatingButton } from "../assets/icons/FloatingButton";
 
 interface TaskAdderProps {
@@ -13,12 +13,7 @@ interface TaskAdderProps {
     details: string,
     status: NoteStatus
   ) => void;
-  editingNote?: {
-    id: string;
-    title: string;
-    details: string;
-    status: NoteStatus;
-  };
+  editingNote?: NoteProps;
 }
 
 export default function TaskAdder({
