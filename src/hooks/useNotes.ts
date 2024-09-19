@@ -16,7 +16,7 @@ const useNotes = () => {
   status: estado,
     };
     setNotes(prevNotes => [...prevNotes, newNote]);
-  }, []);
+  }, [setNotes]);
 
   
 

@@ -43,7 +43,7 @@ export default function TaskAdder({
       setDescription("");
       setStatus("Iniciado");
     }
-  }, [editingNote]);
+  }, [editingNote, onOpen, onClose]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
